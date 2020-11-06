@@ -15,18 +15,22 @@ const orderSummary = (props) => {
                                 });
 
     return (
-    <Auxilary>
+      <Auxilary>
         <h3>Your Order</h3>
         <p>A delicious with the following ingredients: </p>
-        <ul>
-            {ingredientSummary}
-        </ul>
-        <p><strong>Total price: {props.price}</strong></p>
+        <ul>{ingredientSummary}</ul>
+        <p>
+          <strong>Total price: {props.price}</strong>
+        </p>
         <p>Continue to Checkout?</p>
-        <Button clicked={props.purchaseCancelled} >CANCEL</Button>
-        <Button clicked={props.purchaseContinued} >CONTINUE</Button>
-    </Auxilary>
-);
+        <Button btnType="Danger" clicked={props.pruchaseCancelled}>
+          CANCEL
+        </Button>
+        <Button btnType="Success" clicked={props.purchaseContinued}>
+          CONTINUE
+        </Button>
+      </Auxilary>
+    );
 }
 
 export default orderSummary;
