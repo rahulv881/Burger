@@ -1,93 +1,139 @@
-import React, {Component} from 'react';
-import Button from '../../../components/UI/Button/Button';
-import classes from './ContactData.css';
-import axios from '../../../axios-orders';
-import Spinner from '../../../components/UI/Spinner/Spinner';
+import React, { Component } from "react";
+import Button from "../../../components/UI/Button/Button";
+import classes from "./ContactData.css";
+import axios from "../../../axios-orders";
+import Spinner from "../../../components/UI/Spinner/Spinner";
+import Input from "../../../components/UI/Forms/Input/Input";
 
-class ContactData extends Component{
-    
-    state = {
-        name:'Rahul',
-        email:'rahulvv88@gmail.com',
-        address:{
-            street:'476/1',
-            postCode:'121005'
+class ContactData extends Component {
+  state = {
+    orderForm: {
+      name: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Your name",
         },
-        loading: false
+        value: "",
+      },
+      street: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Street",
+        },
+        value: "",
+      },
+      zipCode: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Postal Code",
+        },
+        value: "",
+      },
+      country: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Country",
+        },
+        value: "",
+      },
+      email: {
+        elementType: "input",
+        elementConfig: {
+          type: "email",
+          placeholder: "Your E-Mail",
+        },
+        value: "",
+      },
+      deliveryMethod: {
+        elementType: "select ",
+        elementConfig: {
+          options: [
+            {
+              value: "fastest",
+              displayValue: "Fastest",
+            },
+            {
+              value: "cheapest",
+              displayValue: "Cheapest ",
+            },
+          ],
+        },
+        value: "",
+      },
+    },
+    loading: false,
+  };
+
+  orderHandler = (event) => {
+    event.preventDefault();
+    console.log(this.props.ingredients);
+
+    this.setState({ loading: true });
+    const order = {
+      ingredients: this.props.ingredients,
+      price: this.props.price,
+      customer: {
+        name: "Rahul",
+        address: {
+          street: "476/1",
+          zipCode: 121005,
+          country: "India",
+        },
+        email: "rahulv881@gmail.com",
+      },
+      deliveryMethod: "Same Day",
+    };
+    axios
+      .post("./orders.json", order)
+      .then((response) => {
+        this.setState({ loading: false });
+        this.props.history.push("/");
+      })
+      .catch((error) => {
+        this.setState({ loading: false });
+      });
+  };
+
+  render() {
+    let formElementsArray = [];
+    for (let key in this.state.orderForm) {
+      formElementsArray.push({
+        id: key,
+        config: this.state.orderForm[key],
+      });
     }
 
-    orderHandler = (event)=>{
-      event.preventDefault ();
-      console.log(this.props.ingredients);
-
-       this.setState({ loading: true });
-       const order = {
-         ingredients: this.props.ingredients,
-         price: this.props.price,
-         customer: {
-           name: "Rahul",
-           address: {
-             street: "476/1",
-             zipCode: 121005,
-             country: "India",
-           },
-           email: "rahulv881@gmail.com",
-         },
-         deliveryMethod: "Same Day",
-       };
-       axios.post("./orders.json", order)
-         .then((response) => {
-           this.setState({loading: false});
-           this.props.history.push('/');
-         })
-         .catch((error) => {
-           this.setState({loading: false}); 
-         });
+    let form = (
+      <form>
+        {formElementsArray.map((formElement) => (
+          <Input
+            key={formElement.id}
+            elementType={formElement.config.elementType}
+            elementConfig={formElement.config.elementConfig}
+            value={formElement.config.value}
+          />
+        ))}
+       
+        <Button btnType="Success" clicked={this.orderHandler}>
+          Order
+        </Button>
+      </form>
+    );
+    if (this.state.loading) {
+      form = <Spinner />;
     }
 
-    render(){
-      let form = (
-        <form>
-          <input
-            type="text"
-            name="name"
-            placeholder="Your Name"
-            className={classes.Input}
-          />
-          <input
-            type="text"
-            name="email"
-            placeholder="Your Mail"
-            className={classes.Input}
-          />
-          <input
-            type="text"
-            name="street"
-            placeholder="Street"
-            className={classes.Input}
-          />
-          <input
-            type="text"
-            name="postal code"
-            placeholder="Postal Code"
-            className={classes.Input}
-          />
-          <Button btnType="Success" clicked={this.orderHandler}>
-            Order
-          </Button>
-        </form>
-      );
-      if (this.state.loading) {
-        form = <Spinner />;
-      }
-
-      return (
-         <div className={classes.ContactData}>
-            <h4>Enter your contact data</h4>
-            {form} 
-          </div>
-        );
-    }
+    return (
+      <div className={classes.ContactData}>
+        <h4>Enter your contact data</h4>
+        {form}
+      </div>
+    );
+  }
 }
 
 export default ContactData;
