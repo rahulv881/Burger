@@ -89,10 +89,10 @@ class ContactData extends Component {
             },
           ],
         },
-        value: "fastest",
+        value: "",
         validation: {
           required: false,
-        },
+        }, 
         valid: true,
       },
     },
